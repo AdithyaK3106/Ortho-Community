@@ -56,7 +56,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <a
             data-testid="navbar-dashboard-link"
-            href="../dashboard/index.html"
+            href="/Ortho-Community/dashboard.html"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:inline-flex items-center h-9 px-4 bg-[#27272a] text-[#f4f4f4] text-xs uppercase tracking-[0.18em] hover:bg-[#52525b] transition-colors border border-[#52525b]"
@@ -115,7 +115,7 @@ export default function Navbar() {
             ))}
             <a
               data-testid="navbar-mobile-dashboard-link"
-              href="../dashboard/index.html"
+              href="/Ortho-Community/dashboard.html"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
