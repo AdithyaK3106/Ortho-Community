@@ -604,13 +604,17 @@
   }
 </script>
 <script>
-  // pick the repo from ?repo= and load its data file synchronously (works on file://)
+  // pick the repo from ?repo= and load its data file synchronously
   (() => {
     const repos = window.ORTHO_REPOS || [];
     const want = (new URLSearchParams(location.search).get("repo") || "").replace(/[^a-z0-9_-]/g, "");
     const name = repos.some(r => r.name === want) ? want : (repos[0] && repos[0].name);
     window.ORTHO_REPO_NAME = name;
-    if (name) document.write(`<script src="data/${name}.js"><\/script>`);
+    if (name) {
+      const script = document.createElement('script');
+      script.src = `data/${name}.js`;
+      document.head.appendChild(script);
+    }
   })();
 </script>
 <script>
