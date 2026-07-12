@@ -17,52 +17,51 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: landing/package-lock.json
 
       - name: Install dependencies
         working-directory: landing
         run: npm ci
 
-      - name: Build
+      - name: Build application
         working-directory: landing
         run: npm run build
 
-      - name: Upload build to gh-pages
-        uses: actions/upload-artifact@v3
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: build
           path: landing/build/
+          retention-days: 1
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Download build
-        uses: actions/download-artifact@v3
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
           name: build
-          path: build-output/
+          path: ./build/
 
-      - name: Deploy to gh-pages
+      - name: Deploy to GitHub Pages
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git checkout --orphan gh-pages
+          git checkout --orphan gh-pages-new
           git rm -rf .
-          cp -r build-output/* .
+          cp -r build/* .
           git add .
           git commit -m "Deploy: $(date)"
-          git push -f origin gh-pages
+          git push -f origin gh-pages-new:gh-pages
