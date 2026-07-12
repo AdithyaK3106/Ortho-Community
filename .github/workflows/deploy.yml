@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'landing/**'
-      - '.github/workflows/deploy.yml'
 
 permissions:
   contents: write
