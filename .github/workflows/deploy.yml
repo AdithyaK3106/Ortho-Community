@@ -29,10 +29,6 @@ jobs:
         working-directory: landing
         run: npm ci
 
-      - name: Update homepage for GitHub Pages
-        working-directory: landing
-        run: npm pkg set homepage='https://AdithyaK3106.github.io/Ortho-Community'
-
       - name: Build
         working-directory: landing
         run: npm run build
