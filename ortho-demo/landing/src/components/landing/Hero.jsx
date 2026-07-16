@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Github } from "lucide-react";
+import { ArrowUpRight, Github, Copy, Check } from "lucide-react";
 
 /**
  * Hero — auto-playing guided product demo.
@@ -143,10 +143,25 @@ function useType(text, speed, resetKey) {
   return out;
 }
 
+const INSTALL_CMD =
+  'irm https://adithyak3106.github.io/Ortho-community/install.ps1 | iex';
+
 export default function Hero() {
   const [sceneIdx, setSceneIdx] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [copied, setCopied] = useState(false);
   const timerRef = useRef(null);
+
+  const copyInstallCmd = async () => {
+    try {
+      await navigator.clipboard.writeText(INSTALL_CMD);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard API unavailable (e.g. insecure context) -- the command
+      // is still visible and selectable, so this is a soft failure.
+    }
+  };
 
   const scene = SCENES[sceneIdx];
 
@@ -250,17 +265,65 @@ export default function Hero() {
                 <ArrowUpRight className="w-4 h-4" />
               </a>
               <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
+                href="https://github.com/AdithyaK3106/Ortho-Community"
+                target="_blank"
+                rel="noopener noreferrer"
                 data-testid="hero-cta-view-github"
                 className="inline-flex items-center gap-2 h-11 px-6 border border-[#27272a] text-[#f4f4f4] text-xs uppercase tracking-[0.2em] hover:border-[#ffb000] hover:text-[#ffb000] transition-colors"
               >
                 <Github className="w-4 h-4" />
                 View GitHub
-                <span className="ml-1 text-[9px] tracking-[0.15em] text-[#0a0a0a] bg-[#ffb000] px-1.5 py-0.5">
-                  SOON
-                </span>
               </a>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="mt-6 max-w-lg"
+            >
+              <div className="text-[10px] uppercase tracking-[0.2em] text-[#52525b] mb-2">
+                install (Windows, PowerShell)
+              </div>
+              <button
+                type="button"
+                onClick={copyInstallCmd}
+                data-testid="hero-install-copy"
+                className="w-full flex items-center justify-between gap-3 h-11 px-4 border border-[#27272a] bg-[#0a0a0a] hover:border-[#ffb000]/50 transition-colors text-left"
+              >
+                <code className="font-mono text-[12px] sm:text-[13px] text-[#f4f4f4] truncate">
+                  {INSTALL_CMD}
+                </code>
+                <span className="shrink-0 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-[#52525b]">
+                  {copied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-[#10b981]" />
+                      <span className="text-[#10b981]">copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      copy
+                    </>
+                  )}
+                </span>
+              </button>
+              <p className="mt-2 text-[10px] text-[#52525b]">
+                macOS/Linux:{" "}
+                <code className="font-mono text-[#a1a1aa]">
+                  curl -fsSL https://raw.githubusercontent.com/AdithyaK3106/Ortho/master/install.sh | bash
+                </code>{" "}
+                &mdash; see{" "}
+                <a
+                  href="https://github.com/AdithyaK3106/Ortho"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#a1a1aa] hover:text-[#ffb000] underline underline-offset-2"
+                >
+                  README
+                </a>
+                .
+              </p>
             </motion.div>
           </div>
 
